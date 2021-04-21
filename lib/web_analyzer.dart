@@ -97,7 +97,11 @@ class WebAnalyzer {
   }
 
   static Future<InfoBase> _getInfo(String url, bool multimedia) async {
-    final response = await _requestUrl(url);
+    Response response;
+    response = await _requestUrl(url);
+    final redirectUrl = response.request.url;
+    if (redirectUrl != null)
+      response = await _requestUrl(redirectUrl.toString());
 
     if (response == null) return null;
     // print("$url ${response.statusCode}");
@@ -175,7 +179,7 @@ class WebAnalyzer {
       true;
 
   static Future<Response> _requestUrl(String url,
-      {int count = 0, String cookie, useDesktopAgent = true}) async {
+      {int count = 0, String cookie, useDesktopAgent = false}) async {
     if (url.contains("m.toutiaoimg.cn")) useDesktopAgent = false;
     Response res;
     final uri = Uri.parse(url);
