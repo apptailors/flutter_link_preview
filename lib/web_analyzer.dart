@@ -97,10 +97,15 @@ class WebAnalyzer {
   }
 
   static Future<InfoBase?> _getInfo(String url, bool multimedia) async {
-    final response = await _requestUrl(url);
+    Response? response;
+    response = await _requestUrl(url, useDesktopAgent: false);
+    final redirectUrl = response?.request?.url;
+    if (redirectUrl != null) {
+      response =
+          await _requestUrl(redirectUrl.toString(), useDesktopAgent: false);
+    }
 
     if (response == null) return null;
-    // print("$url ${response.statusCode}");
     if (multimedia) {
       final String? contentType = response.headers["content-type"];
       if (contentType != null) {
@@ -268,20 +273,24 @@ class WebAnalyzer {
       }
 
       String? title = _analyzeTitle(document);
+
       String? description =
-          _analyzeDescription(document, html)?.replaceAll(r"\x0a", " ");
+      _analyzeDescription(document, html)?.replaceAll(r"\x0a", " ");
       if (!isNotEmpty(title)) {
         title = description;
         description = null;
       }
+
+      final redirectUrl = response.request?.url;
 
       final info = WebInfo(
         title: title,
         icon: _analyzeIcon(document, uri),
         description: description,
         image: _analyzeImage(document, uri),
-        redirectUrl: response.request?.url.toString(),
+        redirectUrl: redirectUrl?.toString(),
       );
+
       return info;
     }
     return null;
@@ -368,7 +377,7 @@ class WebAnalyzer {
       return false;
     });
 
-    metaIcon ??= meta?.firstWhere((e) {
+    metaIcon ??= meta?.firstWhereOrNull((e) {
       final rel = (e.attributes["rel"] ?? "").toLowerCase();
       if (rel == "shortcut icon") {
         icon = e.attributes["href"];
