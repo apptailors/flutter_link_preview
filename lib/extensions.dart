@@ -1,7 +1,7 @@
 extension ListExtensions on List {
-  dynamic firstWhereOrNull(bool test(dynamic element)) {
+  T? firstWhereOrNull<T>(bool test(T element)) {
     try {
-      return firstWhere(test);
+      return (this as List<T>).firstWhere(test);
     } catch (_) {
       return null;
     }

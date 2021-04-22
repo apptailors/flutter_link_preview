@@ -275,7 +275,7 @@ class WebAnalyzer {
       String? title = _analyzeTitle(document);
 
       String? description =
-      _analyzeDescription(document, html)?.replaceAll(r"\x0a", " ");
+          _analyzeDescription(document, html)?.replaceAll(r"\x0a", " ");
       if (!isNotEmpty(title)) {
         title = description;
         description = null;
@@ -308,7 +308,7 @@ class WebAnalyzer {
     return head.toString();
   }
 
-  static InfoBase? _analyzeGif(Document document, Uri uri) {
+  static InfoBase? _analyzeGif(dom.Document document, Uri uri) {
     if (_getMetaContent(document, "property", "og:image:type") == "image/gif") {
       final gif = _getMetaContent(document, "property", "og:image");
       if (gif != null) return WebImageInfo(image: _handleUrl(uri, gif));
@@ -316,22 +316,22 @@ class WebAnalyzer {
     return null;
   }
 
-  static InfoBase? _analyzeVideo(Document document, Uri uri) {
+  static InfoBase? _analyzeVideo(dom.Document document, Uri uri) {
     final video = _getMetaContent(document, "property", "og:video");
     if (video != null) return WebVideoInfo(image: _handleUrl(uri, video));
     return null;
   }
 
-  static String? _getMetaContent(
-      Document document, String property, String propertyValue) {
+  static String? _getMetaContent(dom.Document document, String property,
+      String propertyValue) {
     final meta = document.head?.getElementsByTagName("meta");
-    final ele =
-        meta?.firstWhereOrNull((e) => e.attributes[property] == propertyValue);
+    final dom.Element? ele = meta?.firstWhereOrNull<dom.Element>(
+            (e) => e.attributes[property] == propertyValue);
     if (ele != null) return ele.attributes["content"]?.trim();
     return null;
   }
 
-  static String _analyzeTitle(Document document) {
+  static String _analyzeTitle(dom.Document document) {
     final title = _getMetaContent(document, "property", "og:title");
     if (title != null) return title;
     final list = document.head?.getElementsByTagName("title");
@@ -342,7 +342,7 @@ class WebAnalyzer {
     return "";
   }
 
-  static String? _analyzeDescription(Document document, String html) {
+  static String? _analyzeDescription(dom.Document document, String html) {
     final desc = _getMetaContent(document, "property", "og:description");
     if (desc != null) return desc;
 
@@ -362,11 +362,11 @@ class WebAnalyzer {
     return description;
   }
 
-  static String? _analyzeIcon(Document document, Uri uri) {
+  static String? _analyzeIcon(dom.Document document, Uri uri) {
     final meta = document.head?.getElementsByTagName("link");
     String? icon = "";
     // get icon first
-    var metaIcon = meta?.firstWhereOrNull((e) {
+    dom.Element? metaIcon = meta?.firstWhereOrNull<dom.Element>((e) {
       final rel = (e.attributes["rel"] ?? "").toLowerCase();
       if (rel == "icon") {
         icon = e.attributes["href"];
@@ -377,7 +377,7 @@ class WebAnalyzer {
       return false;
     });
 
-    metaIcon ??= meta?.firstWhereOrNull((e) {
+    metaIcon ??= meta?.firstWhereOrNull<dom.Element>((e) {
       final rel = (e.attributes["rel"] ?? "").toLowerCase();
       if (rel == "shortcut icon") {
         icon = e.attributes["href"];
@@ -397,7 +397,7 @@ class WebAnalyzer {
     return _handleUrl(uri, icon);
   }
 
-  static String? _analyzeImage(Document document, Uri uri) {
+  static String? _analyzeImage(dom.Document document, Uri uri) {
     final image = _getMetaContent(document, "property", "og:image");
     return _handleUrl(uri, image);
   }
