@@ -110,16 +110,16 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.5.6"
+    version: "2.0.0"
   gbk2utf8:
     dependency: transitive
     description:
       path: "."
-      ref: null-safety
-      resolved-ref: "3f4785fbc7262e4d8c086be5b8b1158e1af3167d"
+      ref: master
+      resolved-ref: "8a57a81dd807d8851b3d7a5aa1b1117b2e8e2b6a"
       url: "git@github.com:apptailors/gbk2utf8.git"
     source: git
-    version: "1.0.1"
+    version: "2.0.0"
   html:
     dependency: transitive
     description:
