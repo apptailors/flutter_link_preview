@@ -233,7 +233,6 @@ class WebAnalyzer {
       }
     }
     client.close();
-    if (res == null) print("Get web info empty($url)");
     return res;
   }
 
@@ -322,11 +321,11 @@ class WebAnalyzer {
     return null;
   }
 
-  static String? _getMetaContent(dom.Document document, String property,
-      String propertyValue) {
+  static String? _getMetaContent(
+      dom.Document document, String property, String propertyValue) {
     final meta = document.head?.getElementsByTagName("meta");
     final dom.Element? ele = meta?.firstWhereOrNull<dom.Element>(
-            (e) => e.attributes[property] == propertyValue);
+        (e) => e.attributes[property] == propertyValue);
     if (ele != null) return ele.attributes["content"]?.trim();
     return null;
   }
